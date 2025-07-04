@@ -24,7 +24,7 @@
           draft: true
 ```
 
-### プレスリリースとして作成する場合
+### プレリリースとして作成する場合
 ```yaml
       - uses: daiichi-g/create-release-with-generated-notes@v1
         with:
@@ -35,9 +35,9 @@
 
 
 ## パラメータ
-| パラメータ名 | 必須 | 説明 |
-|:---|:---:|:---|
-| tag |必須 | リリースのタグ名 |
-| previous-tag | | 前回のリリースのタグ名 |
-| draft | | true: ドラフトとして作成する |
-| prerelease | | true: プレスリリースとして作成する |
+| パラメータ名 | 必須 | 型 | 説明 |
+|:---|:---:|:---:|:---|
+| tag |必須 | string | リリースのタグ名 |
+| previous-tag | - | string | 前回のリリースのタグ名 |
+| draft | - | boolean | true: ドラフトとして作成する |
+| prerelease | - | boolean | true: プレリリースとして作成する |
