@@ -1,0 +1,47 @@
+name: "リリースノート自動生成機能を利用してリリースを作成する"
+description: "GitHubリリースの「Generate release notes」ボタンをクリックした際に生成されるリリースノートを利用して、GitHubリリースを作成するアクションです。"
+inputs:
+  tag:
+    type: string
+    description: 'リリースのタグ名'
+    required: true
+  previous-tag:
+    type: string
+    description: '前回のリリースのタグ名(省略した場合はGitHubが自動推定）'
+    required: false
+    default: ''
+  draft:
+    type: boolean
+    description: 'ドラフトリリースとして作成するかどうか'
+    required: false
+    default: false
+  prerelease:
+    type: boolean
+    description: 'プレリリースとして作成するかどうか'
+    required: false
+    default: false
+runs:
+  using: "composite"
+  steps:
+  - uses: actions/github-script@v7
+    with:
+      script: |
+        // リリースノートを生成する
+        const response = await github.rest.repos.generateReleaseNotes({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: '${{ inputs.tag }}',
+            previous_tag_name: '${{ inputs.previous-tag }}'
+        });
+        console.log(`response.data = ${JSON.stringify(response.data, null, 2)}`);
+
+        // リリースを作成する
+        const releaseResponse = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: '${{ inputs.tag }}',
+            name: response.data.name,
+            body: response.data.body,
+            draft: ${{ inputs.draft }},
+            prerelease: ${{ inputs.prerelease }}
+        });
